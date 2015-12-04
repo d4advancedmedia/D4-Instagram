@@ -1,0 +1,11 @@
+.instagram-feed-list  {
+  text-align: center;
+}
+.instagram-feed-list li {
+  border: 6px solid #313131;
+  display: inline-block;
+  margin: 5px;
+}
+.instagram-feed h1  {
+  text-align: center;
+}

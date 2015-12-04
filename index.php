@@ -10,7 +10,9 @@
 	License: GPL2
 */
 
+wp_register_style( 'd4instagram', plugins_url( '/css/d4instagram.css' , __FILE__ ));
+wp_enqueue_style('d4instagram' );
+
 include ('lib/d4instagram.php');
-add_thickbox();
 
 ?>

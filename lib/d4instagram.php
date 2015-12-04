@@ -74,37 +74,33 @@ $options = get_option('d4instagram_options');
 echo "<input id='auth_token_string' name='d4instagram_options[auth_token]' size='40' type='text' value='{$options['auth_token']}' />";
 }
 
-/* validate our options
-function d4instagram_options_validate($input) {
-$options = get_option('d4instagram_options');
-$options['text_string'] = trim($input['text_string']);
-if(!preg_match('/^[a-z0-9]{32}$/i', $options['text_string'])) {
-$options['text_string'] = '';
-}
-return $options;
-}*/
 
-/*
-Step 1: Set up application (uncheck OAuth redirect_uri): http://instagram.com/developer/clients/manage/#
-
-Step 2: Get code: https://api.instagram.com/oauth/authorize/?client_id=CLIENT-ID&redirect_uri=REDIRECT-URI&response_type=code
-
-Step 3: Get token:
-https://instagram.com/oauth/authorize/?client_id=CLIENT-ID&redirect_uri=REDIRECT-URI&response_type=token
-*/
-
-// Use: [d4instagram id="" hashtag=""]
+// Use: [d4instagram id="" title="" size="(any value here will load the full size thumb)" number=""]
 	function shortcode_d4instagram( $atts ) {
 		$attr = shortcode_atts( array(
-			'id'=>'',
-			'hashtag'=>''
+			'id'		=>	'',
+			'title'		=>	'',
+			'size'		=>	'',
+			'number'	=> 	'',
+			'effect'	=>	''
 		), $atts );
 
 		if ($attr['id'] != '') {
-			$id = 'id="'.$attr['id'].'"';
+			$id = ' id="'.$attr['id'].'"';
 		}
-		if ($attr['hashtag'] != '') {
-			$hashtag = $attr['hashtag'];
+		if ($attr['title'] != '') {
+			$title = $attr['title'];
+		}
+		if ($attr['number'] != '') {
+			$number = $attr['number'];
+		} else {
+			$number = '8';
+		}
+
+		if ($attr['effect'] != '') {
+			$effect = $attr['effect'];
+		} else {
+			$effect = 'swipebox';
 		}
 
 		$options = get_option('d4instagram_options');
@@ -124,25 +120,25 @@ https://instagram.com/oauth/authorize/?client_id=CLIENT-ID&redirect_uri=REDIRECT
 
 		$results = json_decode($fetch);
 
-		//$response = json_decode($popular, true);
 		$middles = '';
-		//$middles = '<div style="display:none">'. print_r($results,true) .'</div>';
 		$i = 0;
 		foreach ( $results->data as $data ) {
-			if(++$i > 8)
+			if(++$i > $number)
 				break;
 			$link = $data->link;
 				$link = $data->images->standard_resolution->url;
 			$caption = $data->caption->text;
 			$author = $data->caption->from->username;
 			$thumbnail = $data->images->thumbnail->url;
-			//$dataPrint = print_r($data,true);
-			//$rel = 'rel="shadowbox[instagram];'.$caption'"';
-			$middles .= '<li><div class=hidden>'.$dataPrint.'</div><a class="thickbox" href="'. $link . '" target="_blank" '.$rel.' title="' . $caption . '"><img src="'.  $thumbnail .'" width="150" height="150"/></a></li>';
+
+			if ($attr['size'] != '') {
+				$thumbnail = $link;		
+			}
+
+			$middles .= '<li><div class=hidden>'.$dataPrint.'</div><a class="'.$effect.'" href="'. $link . '" target="_blank" '.$rel.' title="' . $caption . '"><img src="'.  $thumbnail .'" width="150" height="150"/></a></li>';
 		}
 		$output  = '';
-		//$output .= '<div class="instagram-hashtag">#'.$hashtag.'</div>';
-		$output .= '<div class="instagram-feed"><div class="page-wrapper"><h1>'.$hashtag.'</h1><h3>Follow Us On Instagram</h3><ul class="instagram-feed-list nobull">'. $middles . '</ul></div></div>';
+		$output .= '<div'.$id.' class="instagram-feed"><div class="page-wrapper"><h1>'.$title.'</h1><ul class="instagram-feed-list nobull">'. $middles . '</ul></div></div>';
 		return $output;
 	}
 
