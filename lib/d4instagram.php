@@ -15,6 +15,8 @@ function d4instagram_plugin_options() {
 ?>
 <div>
 <h2>D4 Instagram Feed</h2>
+<a href="https://api.instagram.com/oauth/authorize/?client_id=CLIENT-ID&redirect_uri=REDIRECT-URI&response_type=code" target="_blank">Click here to authorize the site to post photos from your Instagram account</a>
+<hr>
 <h4>Step 1:</h4>
 Set up application (uncheck OAuth redirect_uri): http://instagram.com/developer/clients/manage/#
 <h4>Step 2:</h4>
